@@ -1,0 +1,460 @@
+Content
+
+1.What is the hook?
+2.useState, useEffect
+3.Props drilling
+4.Passing data from child to parent component
+
+*************************************************************************************************************************
+
+1.What is the hook?
+
+===>Any function that starts with "use" is called a hook.
+    "use" என்ற வார்த்தையில் தொடங்கும் functions அனைத்தும் Hook என்று அழைப்போம்.
+
+===>They are special functions that are available only While react it is rendering.
+    React ஆனது rendering ஆகும்போது மட்டும் available ஆக இருக்கக்கூடிய special function ஐ Hook என்கிறோம்.
+
+===>எடுத்துக்காட்டாக useState and useEffect சொல்லலாம்.
+
+*************************************************************************************************************************
+
+2.useState
+
+===>useState is used to bring state into a component.
+    ஒரு component க்குள் state ஐ கொண்டுவர useState பயன்படுகிறது.
+
+===>useState is used to handle stateful component.
+    stateful component ஐ handle செய்ய பயன்படுத்துவது useState ஆகும்.
+
+===>Hook can only be access in a function.
+    ஒரு function ல் மட்டுமே Hook ஐ பயன்படுத்த முடியும்.
+    ஏனென்றால் class component ல் constructor கொடுத்து state ஐ பயன்படுத்துவோம்.
+
+===>To create a counter,where the value is increased as a function of time or at the click of a button.
+    ஒரு button ஐ click  செய்யும்போது மற்றும் Timer ஐ வைத்து value அல்லது count ஐ increase செய்ய இது போன்ற இடங்களில் useState பயன்படுகிறது.
+
+===>useState Example : 1
+
+    serTimer method:
+
+import React, { useState } from "react";
+
+function App() {
+
+
+  const [counter, setCounter] = useState(0);
+// counter    => state name
+
+// setCounter => [state setter name]
+//               ["set" keyword must]
+//               [state ஐ change செய்ய பயன்படுகிறது]
+
+// useState   => Hook name
+
+// 0          => [initial value must be given]
+//               [the value "0" is assigned to counter or statename]
+
+  setTimeout(() => {
+    setCounter(counter + 1);
+    console.log("rendering ...", counter);
+  }, 2000);
+  return <div>App</div>;
+}
+
+export default App;
+
+
+output:
+console ல் ஒவ்வொரு 1000 m/s க்கும் ஒரு முறை render ஆகி settimer ஆனது increase ஆகிக் கொண்டிருப்பதை காணலாம்.
+
+                ************************************************************
+
+===>useState Example : 2
+
+    onClick button method:
+
+import React, { useState } from "react";
+
+function App() {
+
+
+  const [counter, setCounter] = useState(0);
+// counter    => state name
+
+// setCounter => [state setter name]
+//               ["set" keyword must]
+//               [state ஐ change செய்ய பயன்படுகிறது]
+
+// useState   => Hook name
+
+// 0          => [initial value must be given]
+//               [the value "0" is assigned to counter or statename]
+
+function incrementClick () {
+  setCounter(counter + 1);
+}
+
+function decrementClick () {
+  setCounter(counter - 1);
+}
+
+function resetClick () {
+  setCounter(0);
+}
+  
+  return (
+    <div>
+      <p> {counter} </p>
+      <button onClick={incrementClick}>Add</button>
+      <button onClick={decrementClick}>Reduce</button>
+      <button onClick={resetClick}>Reset All</button>
+    </div>
+  )
+}
+
+export default App;
+
+
+output:
+screen ல் Add என்ற button ஐ தொடும் போது count ஆனது increase ஆகிக்கொண்டே இருக்கும்.
+          Reduce என்ற button ஐ தொடும் போது count ஆனது decrease ஆகிக்கொண்டே இருக்கும்.
+          Reset All என்ற button ஐ தொடும் போது count ஆனது reset ஆகிவிடும்.
+
+                ************************************************************
+
+Converting it to a new or separate component
+இதனை புதிதாக அல்லது separate Component ஆக மாற்றுதல்
+
+Step 1:
+{
+  <Display />
+}
+
+Step2:
+function Display() {
+   return (
+   <p>{counter}</p>
+   )
+}
+
+How to set state as props and pass it to a component?
+இதனை ஒரு component க்கு state ஐ props ஆக set செய்து pass செய்வது எப்படி?
+
+src => create a folder (component) =>create a file(Display.jsx) => paste the display function => import Display
+
+                ************************************************************
+
+import React, { useState } from "react";
+import Display from "./components/Display";
+
+
+function App() {
+  const [counter, setCounter] = useState(0);
+
+  function incrementClick() {
+    setCounter(counter + 1);
+  }
+
+  function decrementClick() {
+    setCounter(counter - 1);
+  }
+
+  function resetClick() {
+    setCounter(0);
+  }
+
+  return (
+    <div>
+      <Display counter = {counter}/>
+      <button onClick={incrementClick}>Add</button>
+      <button onClick={decrementClick}>Reduce</button>
+      <button onClick={resetClick}>Reset All</button>
+    </div>
+  );
+}
+
+export default App;
+
+                ************************************************************
+
+இதேபோல் Button என்ற component ஐ create செய்து props ஐ பயன்படுத்துதல்
+
+
+import React, { useState } from "react";
+import Display from "./components/Display";
+
+function Button( {handleClick , name} ) {
+  return (
+    <button onClick={handleClick}>{name}</button>
+  )
+}
+
+function App() {
+  const [counter, setCounter] = useState(0);
+
+  function incrementClick() {
+    setCounter(counter + 1);
+  }
+
+  function decrementClick() {
+    setCounter(counter - 1);
+  }
+
+  function resetClick() {
+    setCounter(0);
+  }
+
+  return (
+    <div>
+      <Display counter = {counter}/>
+
+      <Button handleClick={incrementClick} name = "Add"/>
+      <Button handleClick={decrementClick} name = "Reduce"/>
+      <Button handleClick={resetClick} name = "Reset All"/>
+    </div>
+  );
+}
+
+export default App;
+
+
+output: எந்தவித மாற்றமும் இல்லாமல்
+
+screen ல் Add என்ற button ஐ தொடும் போது count ஆனது increase ஆகிக்கொண்டே இருக்கும்.
+          Reduce என்ற button ஐ தொடும் போது count ஆனது decrease ஆகிக்கொண்டே இருக்கும்.
+          Reset All என்ற button ஐ தொடும் போது count ஆனது reset ஆகிவிடும்.
+
+*************************************************************************************************************************
+
+2.useEffect
+
+===>Use effect hook is used in functional components in React to manage the side effects [data fetching, DOM manipulation, subscriptions].
+    useEffect hook ஆனது functional components ல் மட்டுமே செயல்படுத்த முடியும் அல்லது பயன்படுத்த முடியும்.
+    
+===>useEffect Hook Example : 1
+
+    Document Title Name Change
+
+import React, { useEffect, useState } from 'react'
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  useEffect( () => {
+    document.title = ` Count : ${count}`;
+  }, []);
+  
+  const handleChange = () => {
+    setCount (count + 1);
+  }
+
+  console.log(count);
+
+  return (
+    <div>
+      <h2>Document Title Name Change</h2>
+      <button onClick={handleChange} > Change Count</button>
+    </div>
+  )
+}
+
+export default App
+
+
+output:
+Document Title Name Change ஆகி வரும்
+
+
+
+===>useEffect Hook Example : 2
+
+    API Fetch couries name printed
+
+import React,{useEffect,useState} from 'react'
+
+function App() {
+
+// Create a state to store the data fetched from the API
+const [posts, setPosts] = useState(null);
+
+const fetchPosts = async () => {
+  const response = await fetch ("https://restcountries.com/v2/all");
+  const data = await response.json();
+  setPosts(data);
+}
+
+// data has to be fetched
+// the following will run only once
+useEffect (() => {
+  fetchPosts();
+}, []);
+
+
+  return (
+    <div>
+      <h2>API DATA - REST COUNTRIES NAME</h2>
+      {
+        posts ? (
+          <ul>
+            {
+              posts.map(post =>
+                <li key={post.id}>{post.name}</li>
+                )
+            }
+          </ul>
+        ) : (
+          <p>Fetching Data Loading.....</p>
+        )
+      }
+    </div>
+  )
+}
+
+export default App
+
+
+output:
+
+restcounries என்ற API ல் உள்ள name ஆனது print ஆகும்.
+
+*************************************************************************************************************************
+
+3.Props drilling
+
+===>the process of passing data from a top-level component all the way down to a deeply nested component, even though some of the intermediate components don't actually use those props themselves.
+    props ஐ nested component க்கு பயன்படுத்துவது ஆகும்.
+    அதாவது 
+    grandfather => father
+    father      => son 
+    son         => child
+    child       => other components
+
+    இவ்வாறு அடுக்கடுக்காக props ஐ பயன்படுத்துவதை Props drilling என்று கூறுவோம்.
+
+===>Similiar to ஒரு props ஆனது யாருக்கு தேவைப்படுகிறதோ அல்லது எந்த component க்கு தேவைப்படுகிறதோ அதனை சென்றடைய தாண்டிச் செல்வது தான் Props drilling என்று கூறுவோம்.
+
+===>Example:
+
+import React from 'react'
+
+function GrandChildComponent( {data} ) {
+  console.log(`from grand child component : ${data}`);
+  return (
+    <div>
+      <h3>GrandChild Component</h3>
+    </div>
+  )
+}
+
+function ChildComponent( {data} ) {
+  console.log(data);
+  return (
+    <div>
+      <h2>Child Component</h2>
+      <GrandChildComponent data ={data} />
+    </div>
+  )
+}
+
+function App() {
+  const parentData = `Helo From Parent`; 
+  return (
+    <div>
+      <h2>Parent Component</h2>
+      <ChildComponent data ={parentData} />
+    </div>
+  )
+}
+
+export default App;
+
+
+ouput:
+Parent Component
+Child Component
+GrandChild Component
+ 
+*************************************************************************************************************************
+
+4.Passing data from child to parent component
+
+===>Example : 1
+
+import React from 'react'
+import { Component } from 'react';
+import { useState } from 'react'
+
+// child Component
+// receive the name as data props
+function Hello ( {data} ) {
+  return (
+    <p> Hello {data}</p>
+  )
+}
+
+// parent Component
+// data = "Prabhakaran"
+function App() {
+  const [data,setData] = useState("Prabahkaran");
+
+  return (
+    <div>
+      <Hello data = {data} />
+    </div>
+  )
+}
+
+export default App;
+
+output:
+Kindly see the console
+
+
+
+===>Example : 2
+
+import React, { useState } from 'react';
+
+// child component
+function ChildComponent({ sendDataToParent }) {
+  // data to be passed to the parent component
+  let message = `Hello Parent!`;
+
+  const sendData = () => {
+    sendDataToParent(message);
+  }
+
+  return (
+    <div>
+      <button onClick={sendData}>Send Data to Parent</button>
+    </div>
+  )
+}
+
+// parent component
+function App() {
+
+  // define a state to store the child data in the parent component
+  const [dataFromChild, setDataFromChild] = useState('');
+
+  const handleDataFromChild = (message) => {
+    setDataFromChild(message);
+  }
+
+  return (
+    <div>
+      <div>Data From Child: {dataFromChild}</div>
+      <ChildComponent sendDataToParent={ handleDataFromChild } />
+    </div>
+  )
+}
+
+export default App;
+
+
+
+output:
+Kindly see the console
+
+*************************************************************************************************************************
